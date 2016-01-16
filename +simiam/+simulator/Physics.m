@@ -55,6 +55,26 @@ classdef Physics < handle
                     token_l = token_l.next_;
                 end
                 
+                % mfu edit
+                % check against dynamic obstacles
+                token_l =  obj.world.obstacle_dyn.head_;
+                while (~isempty(token_l))
+                    obstacle_dyn = token_l.key_.obstacle_dyn;
+                    body_o_s = obstacle_dyn.surfaces.head_.key_;
+                    
+                    if(body_r_s.precheck_surface(body_o_s))
+                        pts = body_r_s.intersection_with_surface(body_o_s, true);
+%                         bool = (pts.size_ > 0);
+                        bool = (size(pts,1) > 0);
+                        if (bool)
+                            fprintf('COLLISION!\n');
+                            return;
+                        end
+                    end
+                    token_l = token_l.next_;
+                end
+                
+                
                 % check against other robots
 %                 token_l = obj.world.robots.head_;
 %                 while (~isempty(token_l))
@@ -104,6 +124,20 @@ classdef Physics < handle
                         end
                         token_l = token_l.next_;
                     end
+                    
+                    % mfu edit
+                    % check against dynamic obstacles
+                    token_l = obj.world.obstacle_dyn.head_;
+                    while (~isempty(token_l))
+                        obstacle_dyn = token_l.key_.obstacle_dyn;
+                        body_o_s = obstacle_dyn.surfaces.head_.key_;
+                        
+                        if(body_ir_s.precheck_surface(body_o_s))
+                            d_min = obj.update_proximity_sensor(ir, body_ir_s, body_o_s, d_min);
+                        end
+                        token_l = token_l.next_;
+                    end
+                    
 
                     % check against other robots
 %                     token_l = obj.world.robots.head_;

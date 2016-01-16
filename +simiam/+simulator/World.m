@@ -9,6 +9,9 @@ classdef World < handle
         parent
         apps
         root_path
+        
+        %mfu edit
+        obstacle_dyn
     end
     
     methods
@@ -18,6 +21,9 @@ classdef World < handle
             obj.obstacles = mcodekit.list.dl_list();
             obj.apps = simiam.containers.ArrayList(10);
             obj.root_path = '';
+            
+            %mfu edit
+            obj.obstacle_dyn = mcodekit.list.dl_list();
         end
         
         function build_from_file(obj, root, file, origin)
@@ -85,6 +91,44 @@ classdef World < handle
                
                obj.add_obstacle(x, y, theta, obstacle_geometry);
             end
+            
+            %mfu edit
+            % Parse XML file for dynamic obstacles configurations
+            obstacle_dyn_list = blueprint.getElementsByTagName('obstacle_dyn');
+            for i = 0:(obstacle_dyn_list.getLength-1)
+                obstacle_dyn = obstacle_dyn_list.item(i);
+
+                pose        = obstacle_dyn.getElementsByTagName('pose').item(0);
+                x           = str2double(pose.getAttribute('x'));
+                y           = str2double(pose.getAttribute('y'));
+                theta       = str2double(pose.getAttribute('theta'));
+                
+                
+                movement    = obstacle_dyn.getElementsByTagName('movement').item(0);
+                direction   = str2double(movement.getAttribute('direction'));
+                speed       = str2double(movement.getAttribute('speed'));
+                radius      = str2double(movement.getAttribute('radius'));
+                type        = movement.getAttribute('type');
+                
+                theta       = direction;
+                
+                geo = obstacle_dyn.getElementsByTagName('geometry').item(0);
+                point_list = geo.getElementsByTagName('point');
+               
+                obstacle_geometry = zeros(point_list.getLength, 2);
+                for j=0:(point_list.getLength-1)
+                    point = point_list.item(j);
+                    obstacle_geometry(j+1,1) = str2double(point.getAttribute('x'));
+                    obstacle_geometry(j+1,2) = str2double(point.getAttribute('y'));
+                end
+                
+                
+                
+                obj.add_obstacle_dyn(x, y, theta, obstacle_geometry, direction, speed, radius, type);
+            end
+            
+            
+            
         end
         
         function aRobot = add_robot(obj, type, spv, x, y, theta)
@@ -117,6 +161,12 @@ classdef World < handle
         function add_obstacle(obj, x, y, theta, geometry)
            pose = simiam.ui.Pose2D(x, y, theta);
            obj.obstacles.append_key(struct('obstacle', simiam.simulator.Obstacle(obj.parent, pose, geometry), 'pose', pose));
+        end
+        
+        %mfu edit
+        function add_obstacle_dyn(obj, x, y, theta, geometry, direction, speed, radius, type)
+           pose = simiam.ui.Pose2D(x, y, theta);
+           obj.obstacle_dyn.append_key(struct('obstacle_dyn', simiam.simulator.Obstacle_dyn(obj.parent, pose, geometry, direction, speed, radius, type), 'pose', pose));
         end
            
     end

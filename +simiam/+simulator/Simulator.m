@@ -84,6 +84,24 @@ classdef Simulator < handle
             end
 %             fprintf('controls: %0.3fs\n', toc(tstart));
             
+            %mfu edit
+            %% update dynamic obstacles position...........................
+            % ........................................................start
+            token_mfu = obj.world.obstacle_dyn.head_;
+            ii=1;
+            while (~isempty(token_mfu))
+                obstacle_dyn_current = token_mfu.key_;
+                [x_dyn_obs, y_dyn_obs, theta_dyn_obs] = obstacle_dyn_current.obstacle_dyn.update_state(obstacle_dyn_current.pose, split).unpack();%unpack because the output is pose 
+                obstacle_dyn_current.pose.set_pose([x_dyn_obs, y_dyn_obs, theta_dyn_obs]);
+              
+                token_mfu = token_mfu.next_;%go to next dyn obstacle
+                ii= ii+ 1;
+            end%while
+            % update dynamic obstacles position............................
+            % .........................................................done
+
+
+
 %             tstart = tic;
             if strcmp(obj.origin, 'simulink')
                 % skip

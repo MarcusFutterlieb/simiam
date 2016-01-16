@@ -43,13 +43,47 @@ classdef Drawable < handle
         end
         
         function draw_surfaces(obj)
-            T = obj.pose.get_transformation_matrix();
-            
-            token_k = obj.surfaces.head_;
-            while(~isempty(token_k))
-                token_k.key_.transform_surface(T);
-                token_k = token_k.next_;
-            end
+        %mfu edit
+            if (isprop(obj,'type') == true)
+                if (strcmp(obj.type,'obstacle_dyn')==true)
+                    %% surface belongs to a dynamic obstacle...................
+                    % ....................................................start
+                    T       = obj.pose.get_transformation_matrix();
+
+                        token_k = obj.surfaces.head_;
+
+                        while(~isempty(token_k))
+                            %pause(0.2);
+                            token_k.key_.transform_surface(T);
+                            token_k = token_k.next_;
+                        end%while
+
+
+                    % surface belongs to a dynamic obstacle....................
+                    % .....................................................done
+                else
+                    %the surface belongs to the robot body or proximity
+                    %sensors
+                    T = obj.pose.get_transformation_matrix();
+
+                    token_k = obj.surfaces.head_;
+                    while(~isempty(token_k))
+                        token_k.key_.transform_surface(T);
+                        token_k = token_k.next_;
+                    end
+    %              end%if
+                end%if
+            else
+                %the surface belongs to the robot (quickbot) body or proximity
+                %sensors
+                T = obj.pose.get_transformation_matrix();
+
+                token_k = obj.surfaces.head_;
+                while(~isempty(token_k))
+                    token_k.key_.transform_surface(T);
+                    token_k = token_k.next_;
+                end
+            end%if
         end
         
 %         function transform_surfaces(obj, T)
