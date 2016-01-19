@@ -190,6 +190,33 @@ classdef AppWindow < handle
             set(findjobj(clock), 'BorderPainted', 0);
             obj.ui_set_button_icon(clock, 'ui_status_clock.png');
             
+            
+            %% mfu edit start
+            cd +simiam/+environments/;
+            available_maps = dir ('*.xml');
+            cd ../..;
+            items = cell(size(available_maps,1),1);
+            for (loop_i = 1:1:size(available_maps,1))
+                items(loop_i) = {available_maps(loop_i).name};
+            end%for
+            clear loop_i;
+            clear available_maps;
+            
+            ui_args = { 'Style', 'popup', ...
+                        'String',items, ...                        %'Units','normalized', ... 'Position',[1 1 1 1], ...
+                        'Callback', @obj.set_environment};
+            
+            %                       rowspan columnspan
+            MergeCells(obj.layout_, [1 1], [1 5]);            
+            %Update(obj.layout_);
+            
+            ui_parent = obj.layout_.Cell(1,1);
+            
+            map = uicontrol(ui_parent, ui_args{:});
+            %obj.ui_set_button_icon(map, 'ui_control_zoom_out.png');
+            %% mfu edit end
+            
+            
             ui_args = {'Style', 'togglebutton', 'BackgroundColor', obj.ui_colors_.gray};
             time = uicontrol(obj.layout_.Cell(1,11), ui_args{:});
             set(findjobj(time), 'BorderPainted', 0);
@@ -204,6 +231,7 @@ classdef AppWindow < handle
                                      'time', time, ...
                                      'zoom_in', zoom_in, ...
                                      'zoom_out', zoom_out, ...
+                                     'map', map, ... %mfu edit
                                      'hardware', hardware, 'hardware_state', false); 
             obj.ui_update_clock(0);
 
@@ -238,6 +266,27 @@ classdef AppWindow < handle
         
         
         % UI functions
+        
+        % mfu edit start
+        function set_environment(obj,source,callbackdata)
+            
+            my_selection = get(source,'Value');
+            maps = get(source,'String');
+            
+            %copyfile('source','destination','f')
+            source_file         = strcat('+simiam/+environments/',maps(my_selection));
+            source_file         = char(source_file);
+            %destination_file    = 'settings.xml';
+            destination_file    = 'settings.xml';
+            %backup destination_file
+            copyfile(destination_file,strcat(destination_file,'-backup'),'f');
+            
+            disp(strcat('selected environment:   ',source_file));
+            %disp(source_file);
+            copyfile(source_file,destination_file,'f');
+                
+        end
+        
         
         function ui_toggle_control(obj, ui_control_button, is_state_on)
             if(is_state_on)
@@ -358,6 +407,7 @@ classdef AppWindow < handle
 
             obj.ui_toggle_control(obj.ui_buttons_.zoom_in, true);
             obj.ui_toggle_control(obj.ui_buttons_.zoom_out, true);
+            obj.ui_toggle_control(obj.ui_buttons_.map, false); %mfu edit
             obj.time_ = 0;
             obj.ui_update_clock(0);
             obj.simulator_.start();
@@ -370,6 +420,7 @@ classdef AppWindow < handle
             obj.ui_toggle_control(obj.ui_buttons_.zoom_in, false);
             obj.ui_toggle_control(obj.ui_buttons_.zoom_out, false);
             obj.ui_toggle_control(obj.ui_buttons_.refresh, false);
+            obj.ui_toggle_control(obj.ui_buttons_.map, true); %mfu_edit
             obj.ui_toggle_control(obj.ui_buttons_.hardware, true);
             obj.ui_set_button_icon(obj.ui_buttons_.status, 'ui_status_ok.png');
             obj.time_ = 0;

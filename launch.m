@@ -5,6 +5,7 @@ function launch()
 
 clear java;
 clear classes;
+clc;
 
 if (isdeployed)
     [path, folder, ~] = fileparts(ctfroot);
@@ -12,6 +13,7 @@ if (isdeployed)
 else
     root_path = fileparts(mfilename('fullpath'));
 end
+cd(root_path)% mfu_edit: helpful for enviroment pull down menue
 addpath(genpath(root_path));
 
 javaaddpath(fullfile(root_path, 'java'));
