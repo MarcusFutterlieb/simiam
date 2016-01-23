@@ -213,6 +213,8 @@ classdef AppWindow < handle
             ui_parent = obj.layout_.Cell(1,1);
             
             map = uicontrol(ui_parent, ui_args{:});
+            
+            copyfile('+simiam/+environments/01_default.xml','settings.xml','f'); %launch default map when user does not select anything
             %obj.ui_set_button_icon(map, 'ui_control_zoom_out.png');
             %% mfu edit end
             
