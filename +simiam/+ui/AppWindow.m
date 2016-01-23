@@ -146,6 +146,14 @@ classdef AppWindow < handle
             obj.ui_set_button_icon(play, 'ui_control_play.png');
             obj.ui_toggle_control(play, true);
             
+            %% mfu_edit start
+            ui_args = {'Style','pushbutton', 'ForegroundColor', 'w', 'FontWeight', 'bold', 'Callback', @obj.ui_button_options};
+            ui_parent = obj.layout_.Cell(4,9);
+            options = uicontrol(ui_parent, ui_args{:});
+            obj.ui_set_button_icon(options, 'ui_control_options.png');
+            obj.ui_toggle_control(options, true);
+            %% mfu_edit end
+            
             ui_args = {'Style','pushbutton', 'ForegroundColor', 'w', 'FontWeight', 'bold', 'Callback', @obj.ui_reset_simulation};
             ui_parent = obj.layout_.Cell(4,5);
             refresh = uicontrol(ui_parent, ui_args{:});
@@ -228,6 +236,7 @@ classdef AppWindow < handle
 
             obj.ui_buttons_ = struct('play', play, 'play_state', false, ...
                                      'refresh', refresh, ...
+                                     'options', options, ...%mfu edit
                                      'load', load, ...
                                      'status', status, ...
                                      'time', time, ...
@@ -269,7 +278,7 @@ classdef AppWindow < handle
         
         % UI functions
         
-        % mfu edit start
+        %% mfu edit start
         function set_environment(obj,source,callbackdata)
             
             my_selection = get(source,'Value');
@@ -288,7 +297,7 @@ classdef AppWindow < handle
             copyfile(source_file,destination_file,'f');
                 
         end
-        
+        %% mfu edit stop
         
         function ui_toggle_control(obj, ui_control_button, is_state_on)
             if(is_state_on)
@@ -334,6 +343,41 @@ classdef AppWindow < handle
             
             obj.ui_update_clock(dt);
         end
+        
+        %% mfu edit start
+        function ui_button_options(obj, src, event)
+            global figure_options;
+            figure_handle = findobj('type','figure','name','Option Interface');
+            if (isempty(figure_handle)==true)
+                figure_options = figure('Name','Option Interface','Position',[0,400,300,200]);
+                        
+                        h.checkbox_FW     = uicontrol   (figure_options, 'Style','checkbox',...
+                                            'String','FW',...
+                                            'Callback', @obj.cb_fw, ...
+                                            'Value',1,'Position',[30 20 150 20]);
+                                        
+                        h.slider_speed = uicontrol('Style', 'slider',...
+                                            'Min',1,'Max',100,'Value',50,...
+                                            'SliderStep',[0.02 0.05], ...
+                                            'Position', [30 50 150 20],...
+                                            'tag','slider_speed', ...
+                                            'Callback', @obj.options_speed_slider);
+            else
+                close(figure_options);
+            end%if
+            
+            
+        end
+        
+        function options_speed_slider(obj, src, event)
+            flag_figure_handle = findobj('type','figure','name','Option Interface');
+            sliderhandle = findobj(flag_figure_handle, 'tag', 'slider_speed');
+            
+            value   = get(sliderhandle,'value');
+            string = ['speed changed to ',num2str(value), '%']; 
+            disp(string);
+        end
+        %% mfu edit stop
         
         function ui_reset_simulation(obj, src, event)
             obj.ui_toggle_control(obj.ui_buttons_.refresh, false);
@@ -416,6 +460,12 @@ classdef AppWindow < handle
         end
         
         function ui_button_home(obj, src, event)
+            %% mfu edit start
+            figure_handle = findobj('type','figure','name','Option Interface');
+            if (isempty(figure_handle)==false)
+                close (figure_handle);
+            end%if
+            %% mfu edit end
             obj.is_ready_ = false;
             obj.center_ = simiam.ui.Pose2D(0,0,0);
             
