@@ -20,6 +20,9 @@ classdef AOandGTG < simiam.controller.Controller
         % sensor geometry
         calibrated
         sensor_placement
+        
+        %mfu edit
+        v_tmp
     end
     
     properties (Constant)
@@ -40,6 +43,8 @@ classdef AOandGTG < simiam.controller.Controller
             obj.E_k = 0;
             obj.e_k_1 = 0;
             
+            %mfu edit
+            obj.v_tmp = 0.25;
 %             obj.p = simiam.util.Plotter();
         end
         
@@ -105,8 +110,18 @@ classdef AOandGTG < simiam.controller.Controller
             obj.p.plot_2d_ref(dt, theta, theta_ao_gtg, 'c');
             
 %             fprintf('(v,w) = (%0.4g,%0.4g)\n', v,w);
+            
+            figure_handle = findobj('type','figure','name','Option Interface');
+            if (isempty(figure_handle)==false)
+                sliderhandle    = findobj(figure_handle, 'tag', 'slider_speed');
+                slider_value    = get(sliderhandle,'value');
+                value_tmp       = obj.v_tmp*(slider_value/100);
+                v = value_tmp/(log(abs(w)+2)+1);
+            else
+                v = obj.v_tmp/(log(abs(w)+2)+1);
+            end%if
 
-            v = 0.25/(log(abs(w)+2)+1);
+            
             
             outputs.v = v;
             outputs.w = w;

@@ -351,13 +351,9 @@ classdef AppWindow < handle
             if (isempty(figure_handle)==true)
                 figure_options = figure('Name','Option Interface','Position',[0,400,300,200]);
                         
-                        h.checkbox_FW     = uicontrol   (figure_options, 'Style','checkbox',...
-                                            'String','FW',...
-                                            'Callback', @obj.cb_fw, ...
-                                            'Value',1,'Position',[30 20 150 20]);
                                         
                         h.slider_speed = uicontrol('Style', 'slider',...
-                                            'Min',1,'Max',100,'Value',50,...
+                                            'Min',1,'Max',100,'Value',100,...
                                             'SliderStep',[0.02 0.05], ...
                                             'Position', [30 50 150 20],...
                                             'tag','slider_speed', ...
@@ -370,12 +366,14 @@ classdef AppWindow < handle
         end
         
         function options_speed_slider(obj, src, event)
-            flag_figure_handle = findobj('type','figure','name','Option Interface');
-            sliderhandle = findobj(flag_figure_handle, 'tag', 'slider_speed');
+            figure_handle = findobj('type','figure','name','Option Interface');
+            sliderhandle = findobj(figure_handle, 'tag', 'slider_speed');
             
             value   = get(sliderhandle,'value');
-            string = ['speed changed to ',num2str(value), '%']; 
+            string = ['speed changed to ',num2str(value), ' % of max speed']; 
             disp(string);
+            class_object = simiam.controller.AOandGTG;
+            class_object.v_tmp = 0.75;
         end
         %% mfu edit stop
         
