@@ -346,11 +346,11 @@ classdef AppWindow < handle
         
         %% mfu edit start
         function ui_button_options(obj, src, event)
-            global figure_options;
+            %global figure_options;
             figure_handle = findobj('type','figure','name','Option Interface');
             if (isempty(figure_handle)==true)
-                figure_options = figure('Name','Option Interface','Position',[0,400,300,200]);
-                        
+                figure_handle = figure('Name','Option Interface','Position',[0,400,300,200]);
+                set(figure_handle, 'menubar', 'none');    
                                         
                         h.slider_speed = uicontrol('Style', 'slider',...
                                             'Min',1,'Max',100,'Value',100,...
@@ -359,7 +359,7 @@ classdef AppWindow < handle
                                             'tag','slider_speed', ...
                                             'Callback', @obj.options_speed_slider);
             else
-                close(figure_options);
+                close(figure_handle);
             end%if
             
             
