@@ -13,7 +13,7 @@ classdef World < handle
         
         %mfu edit
         obstacle_dyn
-        targets
+        target
     end
     
     methods
@@ -190,7 +190,11 @@ classdef World < handle
            pose = simiam.ui.Pose2D(x, y, theta);
            obj.obstacle_dyn.append_key(struct('obstacle_dyn', simiam.simulator.Obstacle_dyn(obj.parent, pose, geometry, direction, speed, radius, type), 'pose', pose));
         end
-           
+          
+        function add_target(obj, x, y, theta)
+           pose = simiam.ui.Pose2D(x, y, theta);
+           obj.target.append_key(struct('target', simiam.simulator.Target(obj.parent, pose), 'pose', pose));
+        end
     end
     
 end

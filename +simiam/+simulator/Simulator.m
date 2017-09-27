@@ -50,6 +50,23 @@ classdef Simulator < handle
             obj.world = world;
             obj.physics = simiam.simulator.Physics(world);
             obj.origin = origin;
+            
+%             %% fill vector in supervisor with info of targets.....
+%             % ........................................................start
+%             token_k = world.targets.head_;
+%             i=1;
+%             while (~isempty(token_k))
+%                 target = token_k.key_;
+%                 obj.world.robots.head_.key_.supervisor.goal(1,i) = target.pose.x;
+%                 obj.world.robots.head_.key_.supervisor.goal(2,i) = target.pose.y;
+%                 %obstacles.supervisor.execute(split);
+%                 token_k = token_k.next_;
+%                 i=i+1;
+%             end
+%             % fill vector in supervisor with info of targets......
+%             % ........................................................done
+            
+            
         end
         
         function step(obj, src, event)

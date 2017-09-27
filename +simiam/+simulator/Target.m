@@ -1,4 +1,4 @@
-classdef LandMark < simiam.ui.Drawable
+classdef Target < simiam.ui.Drawable
     
 % Modification added to the Sim.I.am robot simulator provided by GRITS Lab of Georgia Tech
 % Author of Mod: Marcus Futterlieb
