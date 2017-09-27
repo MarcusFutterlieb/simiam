@@ -2,6 +2,7 @@ classdef World < handle
     
 % Copyright (C) 2013, Georgia Tech Research Corporation
 % see the LICENSE file included with this software
+% Modifications by Marcus Futterlieb
 
     properties
         robots
@@ -12,6 +13,7 @@ classdef World < handle
         
         %mfu edit
         obstacle_dyn
+        targets
     end
     
     methods
@@ -126,6 +128,26 @@ classdef World < handle
                 
                 obj.add_obstacle_dyn(x, y, theta, obstacle_geometry, direction, speed, radius, type);
             end
+
+            % Parse XML file for target configurations
+            target_list = blueprint.getElementsByTagName('target');
+            %             xValues = [];
+            %             yValues = [];
+            for i = 0:(target_list.getLength-1)
+                target = target_list.item(i);
+
+                pose = target.getElementsByTagName('pose').item(0);
+                x = str2double(pose.getAttribute('x'));
+                y = str2double(pose.getAttribute('y'));
+                theta = str2double(pose.getAttribute('theta'));
+            %                 obj.robots.head_.key_.supervisor.targets(1,end+1) = x;
+            %                 obj.robots.head_.key_.supervisor.targets(2,end)   = y;
+
+            %                 obj.robots.head_.key_.supervisor.targets_occlusion(1,end+1)   = 1; % initialize all targets visible in first step
+
+                obj.add_target(x, y, theta);
+            end
+
             
             
             
