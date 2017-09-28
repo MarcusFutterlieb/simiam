@@ -26,6 +26,7 @@ classdef World < handle
             
             %mfu edit
             obj.obstacle_dyn = mcodekit.list.dl_list();
+            obj.target = mcodekit.list.dl_list();
         end
         
         function build_from_file(obj, root, file, origin)

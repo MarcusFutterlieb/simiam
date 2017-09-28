@@ -90,43 +90,18 @@
             <point x="0" y="0.1" />
         </geometry>
     </obstacle>
-    
-    
-    <!-- dyn obstacles always at the end of this file -->
-    <!-- movement typess can be back_forth || straight_line || circle-->
-    <obstacle_dyn>
-        <pose x="-0.7" y="0.7" theta="0"/>
-        <movement speed= "0.08" type= "straight_line" direction= "2.3562" radius= "1" />
-        <geometry>
-            <point x="0.08" y="-0.08" />
-            <point x="0.08" y="0.08" />
-            <point x="-0.08" y="0.08" />
-            <point x="-0.08" y="-0.08" />
-        </geometry>
-    </obstacle_dyn>
 
-
-    <obstacle_dyn>
-        <pose x="-0.7" y="0.0" theta="0"/>
-        <movement speed= "5." type= "circle" direction= "1.57" radius= "0.5" />
-        <geometry>
-            <point x="0.08" y="-0.08" />
-            <point x="0.08" y="0.08" />
-            <point x="-0.08" y="0.08" />
-            <point x="-0.08" y="-0.08" />
-        </geometry>
-    </obstacle_dyn> 
-
-    <obstacle_dyn>
-        <pose x="-0.7" y="-0.7" theta="0" />
-        <movement speed= "0.4" type= "back_forth" direction= "0" radius= "1" />
-        <geometry>
-            <point x="0.08" y="-0.08" />
-            <point x="0.08" y="0.08" />
-            <point x="-0.08" y="0.08" />
-            <point x="-0.08" y="-0.08" />
-        </geometry>
-    </obstacle_dyn> 
+        
+    <target>
+        <pose x="-3" y="3" theta="0" />
+    </target> 
     
+    <target>
+        <pose x="3" y="-1" theta="0" />
+    </target> 
+    
+    <target>
+        <pose x="-3" y="-7" theta="0" />
+    </target> 
     
 </simulation>
