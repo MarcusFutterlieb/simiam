@@ -93,15 +93,15 @@
 
         
     <target>
-        <pose x="-3" y="3" theta="0" />
+        <pose x="-1" y="1" theta="0" />
     </target> 
     
     <target>
-        <pose x="3" y="-1" theta="0" />
+        <pose x="1" y="-1" theta="0" />
     </target> 
     
     <target>
-        <pose x="-3" y="-7" theta="0" />
+        <pose x="-0.5" y="-0.5" theta="0" />
     </target> 
     
 </simulation>

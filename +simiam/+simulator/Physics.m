@@ -5,11 +5,24 @@ classdef Physics < handle
     
     properties
         world
+        position_target
     end
     
     methods
         function obj = Physics(world)
             obj.world = world;
+            
+            token_y     = obj.world.target.head_;
+            i = 1;
+            
+            while (~isempty(token_y))
+                target = token_y.key_.pose;
+                obj.position_target(i,1:2) = [target.x,target.y];
+                i = i + 1;
+                token_y = token_y.next_;
+            end
+            i = 1;
+            
         end
         
         function bool = apply_physics(obj)

@@ -42,6 +42,30 @@ classdef World < handle
             r = str2func(strcat('simiam.app.', app));
             obj.apps.appendElement(r(root));
             
+            
+            % Parse XML file for target configurations
+            target_list = blueprint.getElementsByTagName('target');
+            %             xValues = [];
+            %             yValues = [];
+            for i = 0:(target_list.getLength-1)
+                target = target_list.item(i);
+
+                pose = target.getElementsByTagName('pose').item(0);
+                x = str2double(pose.getAttribute('x'));
+                y = str2double(pose.getAttribute('y'));
+                theta = str2double(pose.getAttribute('theta'));
+                
+                % put all targets from setting file into the robot
+                % supervisor
+%                 obj.robots.head_.key_.supervisor.targets(1,end+1) = x;
+%                 obj.robots.head_.key_.supervisor.targets(2,end)   = y;
+
+                obj.add_target(x, y, theta);
+            end
+
+            
+            
+            
             if(strcmp(origin, 'launcher') || strcmp(origin, 'testing') || strcmp(origin, 'hardware'))
             
                 robot_list = blueprint.getElementsByTagName('robot');
@@ -129,26 +153,6 @@ classdef World < handle
                 
                 obj.add_obstacle_dyn(x, y, theta, obstacle_geometry, direction, speed, radius, type);
             end
-
-            % Parse XML file for target configurations
-            target_list = blueprint.getElementsByTagName('target');
-            %             xValues = [];
-            %             yValues = [];
-            for i = 0:(target_list.getLength-1)
-                target = target_list.item(i);
-
-                pose = target.getElementsByTagName('pose').item(0);
-                x = str2double(pose.getAttribute('x'));
-                y = str2double(pose.getAttribute('y'));
-                theta = str2double(pose.getAttribute('theta'));
-            %                 obj.robots.head_.key_.supervisor.targets(1,end+1) = x;
-            %                 obj.robots.head_.key_.supervisor.targets(2,end)   = y;
-
-            %                 obj.robots.head_.key_.supervisor.targets_occlusion(1,end+1)   = 1; % initialize all targets visible in first step
-
-                obj.add_target(x, y, theta);
-            end
-
             
             
             
@@ -179,6 +183,25 @@ classdef World < handle
             anApp.supervisors.appendElement(supervisor);
             
             aRobot = s.robot;
+            
+            %mfu edit
+            if (strcmp(type,'QuickBot')== true)    
+                %% fill vector in supervisor with info of targets.....
+                % ........................................................start
+                token_k = obj.target.head_;
+                i=1;
+                while (~isempty(token_k))
+                    target = token_k.key_;
+                    supervisor.target(1,i) = target.pose.x;
+                    supervisor.target(2,i) = target.pose.y;
+                    %obstacles.supervisor.execute(split);
+                    token_k = token_k.next_;
+                    i=i+1;
+                end
+                % fill vector in supervisor with info of targets......
+                % ........................................................done    
+            end%if
+            
         end
         
         function add_obstacle(obj, x, y, theta, geometry)

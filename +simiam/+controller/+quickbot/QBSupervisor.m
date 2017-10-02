@@ -44,6 +44,10 @@ classdef QBSupervisor < simiam.controller.Supervisor
         switch_count
         
         fw_direction
+        
+        %mfu edit
+        target
+        num_target
     end
     
     methods
@@ -115,6 +119,11 @@ classdef QBSupervisor < simiam.controller.Supervisor
             obj.d_prog = 10;
             
             obj.switch_count = 0;
+            
+            %mfu edit
+            obj.target               = [];
+            obj.num_target           = 1;
+            
         end
         
         function execute(obj, dt)
@@ -131,6 +140,13 @@ classdef QBSupervisor < simiam.controller.Supervisor
             inputs.d_fw = obj.d_fw;
             inputs.x_g = obj.goal(1);
             inputs.y_g = obj.goal(2);
+            
+            if (size(obj.target,1)<0)
+                inputs.x_g = obj.target(1,obj.num_target);
+                inputs.y_g = obj.target(2,obj.num_target);
+            end%if
+            
+            
             
             %% START CODE BLOCK %%
             
