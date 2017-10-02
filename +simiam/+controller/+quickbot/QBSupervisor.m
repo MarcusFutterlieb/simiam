@@ -133,6 +133,11 @@ classdef QBSupervisor < simiam.controller.Supervisor
         %
         %   See also controller/execute
         
+            if (size(obj.target,1)>0)
+                obj.mfu_target_overwrite(false);
+            end%if
+        
+        
             obj.update_odometry();
         
             inputs = obj.controllers{7}.inputs; 
@@ -141,10 +146,7 @@ classdef QBSupervisor < simiam.controller.Supervisor
             inputs.x_g = obj.goal(1);
             inputs.y_g = obj.goal(2);
             
-            if (size(obj.target,1)<0)
-                inputs.x_g = obj.target(1,obj.num_target);
-                inputs.y_g = obj.target(2,obj.num_target);
-            end%if
+
             
             
             
@@ -157,7 +159,13 @@ classdef QBSupervisor < simiam.controller.Supervisor
                     [x,y,theta] = obj.state_estimate.unpack();
                     fprintf('stopped at (%0.3f,%0.3f)\n', x, y);
                 end
-                obj.switch_to_state('stop');
+                flag = obj.mfu_target_overwrite(true);
+                if(flag==true)
+                    obj.switch_to_state('ao_and_gtg');
+                else
+                    obj.switch_to_state('stop');
+                end%if
+                
             else
                 obj.switch_to_state('ao_and_gtg');
             end
@@ -463,5 +471,20 @@ classdef QBSupervisor < simiam.controller.Supervisor
             [v_0, obj.w_min_v0] = robot.dynamics.diff_to_uni(obj.robot.min_vel, -obj.robot.min_vel);
             [obj.v_min_w0, w_0] = robot.dynamics.diff_to_uni(obj.robot.min_vel, obj.robot.min_vel);
         end
+        
+        function overwride_flag = mfu_target_overwrite(obj,goal_reached)
+            %check if final target was reached
+            if(goal_reached==true)
+                obj.num_target = obj.num_target + 1;
+            end%if
+            if(obj.num_target<=size(obj.target,2))
+                obj.goal(1) = obj.target(1,obj.num_target);
+                obj.goal(2) = obj.target(2,obj.num_target);
+                overwride_flag = true;
+            else
+                overwride_flag = false;
+                % end of target vector reached
+            end%if
+        end%function
     end
 end
